@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'patrimonio',
     'dashboard',
     'autenticacao',  # Adicione esta linha
+    'proventos',
+
 
 
 

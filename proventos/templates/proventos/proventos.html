@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="br-page">
+    <div class="container-lg">
+        <div class="row mb-4">
+            <div class="col">
+                <a href="{% url 'proventos:atualizar' %}" class="br-button primary">
+                    Atualizar Proventos
+                </a>
+            </div>
+        </div>
+        <div class="br-card">
+            <div class="card-content">
+                <div class="br-table" data-search="data-search" data-selection="data-selection">
+                    <div class="table-header">
+                        <div class="top-bar">
+                            <div class="table-title">Proventos</div>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ativo</th>
+                                <th>Tipo</th>
+                                <th>Quantidade</th>
+                                <th>Valor</th>
+                                <th>Total</th>
+                                <th>Data Com</th>
+                                <th>Data Pagamento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for provento in proventos %}
+                            <tr>
+                                <td>{{ provento.papel }}</td>
+                                <td>{{ provento.tipo_provento }}</td>
+                                <td>{{ provento.quantidade }}</td>
+                                <td>{{ provento.valor_provento }}</td>
+                                <td>{{ provento.total }}</td>
+                                <td>{{ provento.data_com }}</td>
+                                <td>{{ provento.data_pagamento }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

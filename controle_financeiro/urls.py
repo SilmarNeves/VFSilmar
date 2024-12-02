@@ -31,4 +31,6 @@ urlpatterns = [
     path('cotacoes/', include('cotacoes.urls')),
     path('patrimonio/', include('patrimonio.urls')),
     path('', include('dashboard.urls')),
+    path('proventos/', include('proventos.urls')),
+
 ]
