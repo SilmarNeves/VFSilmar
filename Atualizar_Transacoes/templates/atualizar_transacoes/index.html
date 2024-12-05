@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
+<<<<<<< HEAD
 {% block title %}Atualizar Sistema{% endblock %}
 
 {% block content %}
@@ -23,11 +24,31 @@
                 <button class="br-button circle small" type="button" aria-label="Fechar">
                     <i class="fas fa-times"></i>
                 </button>
+=======
+{% block title %}Atualizar Transações e Portfólios{% endblock %}
+
+{% block content %}
+<div class="container-lg">
+    <div class="br-card">
+        <div class="card-content">
+            <h2 class="br-h2">Atualizar Transações e Portfólios</h2>
+            <div class="br-card hover">
+                <div class="card-content">
+                    <form action="{% url 'Atualizar_Transacoes:atualizar_sistema' %}" method="post">
+                        {% csrf_token %}
+                        <button class="br-button primary" type="submit">
+                            <i class="fas fa-sync-alt" aria-hidden="true"></i>
+                            <span>Atualizar Sistema</span>
+                        </button>
+                    </form>
+                </div>
+>>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+<<<<<<< HEAD
 
 {% block extra_js %}
 <script>
@@ -68,3 +89,5 @@ document.getElementById('btnAtualizarSistema').addEventListener('click', functio
 });
 </script>
 {% endblock %}
+=======
+>>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c

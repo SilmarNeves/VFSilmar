@@ -3,8 +3,11 @@ from django.db import connection
 import pandas as pd
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+<<<<<<< HEAD
 from django.http import JsonResponse
 from Atualizar_Transacoes.services.atualizar_sistema import atualizar_sistema
+=======
+>>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c
 
 @login_required
 def get_transacoes_context(request):
@@ -153,6 +156,7 @@ def export_transactions(request):
     
     df.to_excel(response, index=False)
     return response
+<<<<<<< HEAD
 
 
 
@@ -163,3 +167,5 @@ def atualizar_sistema_view(request):
         return JsonResponse({'status': 'success', 'message': 'Sistema atualizado com sucesso!'})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+=======
+>>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c

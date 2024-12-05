@@ -2,6 +2,7 @@ from django.conf import settings
 import os
 import pandas as pd
 import sqlite3
+<<<<<<< HEAD
 from datetime import datetime
 
 def atualizar_transacoes():
@@ -21,10 +22,23 @@ def atualizar_transacoes():
     def processar_planilha(path):
         df = pd.read_excel(path, sheet_name="OPERAÇÕES", usecols="A:G")
         df = df.iloc[1:]
+=======
+
+def atualizar_transacoes():
+    origem_path1 = r"C:\Users\Silmar Moreno\Desktop\TRADERSPLAN-3.401 MONICA\TRADERS PLAN_3.45 PRO.xlsm"
+    origem_path2 = r"C:\Users\Silmar Moreno\Desktop\TRADERSPLAN-3.401 SILMAR\TRADERS PLAN_3.45 PRO.xlsm"
+    database_path = os.path.join(settings.BASE_DIR, 'db.sqlite3')
+
+    # Função para ler e processar planilha
+    def processar_planilha(path):
+        df = pd.read_excel(path, sheet_name="OPERAÇÕES", usecols="A:G")
+        df = df.iloc[1:]  # Excluindo a primeira linha
+>>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c
         df.columns = ['Data', 'Operacao', 'Ativo', 'Quantidade', 'Preço', 'Nota', 'Corretora']
         df['Data'] = pd.to_datetime(df['Data']).dt.date
         return df
 
+<<<<<<< HEAD
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
 
@@ -39,21 +53,64 @@ def atualizar_transacoes():
     df_silmar = processar_planilha(origem_path2)
 
     # Limpar e inserir dados
+=======
+    # Ler planilhas
+    df_monica = processar_planilha(origem_path1)
+    df_silmar = processar_planilha(origem_path2)
+
+    # Conectar ao banco de dados
+    conn = sqlite3.connect(database_path)
+    cursor = conn.cursor()
+
+        # Limpar tabelas existentes
+>>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c
     cursor.execute("DELETE FROM transacoes_monica")
     cursor.execute("DELETE FROM transacoes_silmar")
     cursor.execute("DELETE FROM transacoes_consolidadas")
 
+<<<<<<< HEAD
+=======
+    # Função para criar tabela
+    def criar_tabela(nome_tabela):
+        cursor.execute(f"""
+            CREATE TABLE IF NOT EXISTS {nome_tabela} (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Data DATE,
+                Operacao TEXT,
+                Ativo TEXT,
+                Quantidade INTEGER,
+                Preço REAL,
+                Nota TEXT,
+                Corretora TEXT
+            )
+        """)
+
+    # Criar tabelas
+    criar_tabela("transacoes_monica")
+    criar_tabela("transacoes_silmar")
+    criar_tabela("transacoes_consolidadas")
+
+    # Função para inserir dados
+>>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c
     def inserir_dados(df, tabela):
         cursor.executemany(f"""
             INSERT INTO {tabela} (Data, Operacao, Ativo, Quantidade, Preço, Nota, Corretora)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         """, df.values.tolist())
+<<<<<<< HEAD
         return set(df['Data'].unique())
 
     # Inserir e coletar datas atualizadas
     datas_atualizadas.update(inserir_dados(df_monica, "transacoes_monica"))
     datas_atualizadas.update(inserir_dados(df_silmar, "transacoes_silmar"))
 
+=======
+
+    # Inserir dados
+    inserir_dados(df_monica, "transacoes_monica")
+    inserir_dados(df_silmar, "transacoes_silmar")
+    
+>>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c
     # Consolidar dados
     cursor.execute("""
         INSERT INTO transacoes_consolidadas (Data, Operacao, Ativo, Quantidade, Preço, Nota, Corretora)
@@ -65,9 +122,12 @@ def atualizar_transacoes():
     conn.commit()
     conn.close()
 
+<<<<<<< HEAD
     # Retornar datas que precisam ser atualizadas (novas ou modificadas)
     datas_para_atualizar = datas_atualizadas - datas_antigas
     return sorted(list(datas_para_atualizar))
 
+=======
+>>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c
 if __name__ == "__main__":
     atualizar_transacoes()

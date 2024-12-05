@@ -58,7 +58,13 @@ INSTALLED_APPS = [
     'autenticacao',  # Adicione esta linha
     'proventos',
 
+<<<<<<< HEAD
     
+=======
+
+
+
+>>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c
 
 ]
 
