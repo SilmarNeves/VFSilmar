@@ -1,5 +1,4 @@
 from django.db import models
-<<<<<<< HEAD
 
 class HistoricoPortfolio(models.Model):
     data = models.DateField()
@@ -16,7 +15,6 @@ class HistoricoPortfolio(models.Model):
             models.Index(fields=['data']),
             models.Index(fields=['ativo'])
         ]
-=======
 from datetime import datetime
 
 class Provento(models.Model):
@@ -36,4 +34,3 @@ class Provento(models.Model):
 
     def get_data_pagamento_formatted(self):
         return self.data_pagamento.strftime("%d/%m/%Y") if self.data_pagamento else ''
->>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c
