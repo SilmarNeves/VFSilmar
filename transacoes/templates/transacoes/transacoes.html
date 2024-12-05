@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Transações{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="br-card">
+        <div class="card-content">
+            <div class="row mb-4">
+                <div class="col">
+                    <h2 class="br-heading">Transações</h2>
+                </div>
+                <div class="col-auto">
+                    <div class="br-select">
+                        <select id="tabela" class="br-input" onchange="location = this.value;">
+                            {% for nome_tabela, nome_exibicao in tabelas_nomes.items %}
+                                <option value="?tabela={{ nome_tabela }}" 
+                                    {% if tabela_selecionada == nome_tabela %}selected{% endif %}>
+                                    {{ nome_exibicao }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="br-card secondary mb-4">
+                <div class="card-content">
+                    <div class="row align-items-end">
+                        <div class="col-md-3 mb-3">
+                            <div class="br-input">
+                                <label for="data_inicio">Data Inicial</label>
+                                <input type="date" id="data_inicio" class="br-input">
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="br-input">
+                                <label for="data_fim">Data Final</label>
+                                <input type="date" id="data_fim" class="br-input">
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <button class="br-button primary" type="button" id="exportButton">
+                                <i class="fas fa-download" aria-hidden="true"></i>
+                                Exportar Transações
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="br-accordion" single="single">
+                {% for tipo, grid_data in dados_por_tipo.items %}
+                    <div class="item">
+                        <button class="header" type="button" aria-controls="id{{ forloop.counter }}" aria-expanded="false">
+                            <span class="title">{{ tipo }}</span>
+                            <span class="br-tag status small primary ml-2">{{ grid_data.table_data|length }}</span>
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                        </button>
+                        <div class="content" id="id{{ forloop.counter }}">
+                            {% include "components/ggrid.html" with title=grid_data.title columns=grid_data.columns table_data=grid_data.table_data %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const accordions = document.querySelectorAll('.br-accordion .header');
+    
+    accordions.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const content = this.nextElementSibling;
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            
+            this.setAttribute('aria-expanded', !isExpanded);
+            content.style.display = isExpanded ? 'none' : 'block';
+            
+            const icon = this.querySelector('.fas.fa-angle-down');
+            icon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+    });
+}); 
+
+document.getElementById('exportButton').addEventListener('click', function() {
+    const selectedCheckboxes = document.querySelectorAll('.transaction-select:checked');
+    const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.dataset.id);
+    const dataInicio = document.getElementById('data_inicio').value;
+    const dataFim = document.getElementById('data_fim').value;
+   
+    if (selectedIds.length === 0 && (!dataInicio || !dataFim)) {
+        alert('Por favor, selecione transações ou especifique um período de datas.');
+        return;
+    }
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{% url "export_transactions" %}';
+   
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrfmiddlewaretoken';
+    csrfInput.value = '{{ csrf_token }}';
+    form.appendChild(csrfInput);
+
+    selectedIds.forEach(id => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'selected_ids[]';
+        input.value = id;
+        form.appendChild(input);
+    });
+
+    if (dataInicio) {
+        const inputInicio = document.createElement('input');
+        inputInicio.type = 'hidden';
+        inputInicio.name = 'data_inicio';
+        inputInicio.value = dataInicio;
+        form.appendChild(inputInicio);
+    }
+
+    if (dataFim) {
+        const inputFim = document.createElement('input');
+        inputFim.type = 'hidden';
+        inputFim.name = 'data_fim';
+        inputFim.value = dataFim;
+        form.appendChild(inputFim);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+});</script>
+{% endblock %}
