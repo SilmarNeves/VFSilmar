@@ -31,10 +31,5 @@ urlpatterns = [
     path('cotacoes/', include('cotacoes.urls')),
     path('patrimonio/', include('patrimonio.urls')),
     path('', include('dashboard.urls')),
-<<<<<<< HEAD
     path('proventos/', include('proventos.urls', namespace='proventos')),
-=======
-    path('proventos/', include('proventos.urls')),
-
->>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c
 ]

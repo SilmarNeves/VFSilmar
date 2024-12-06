@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-<<<<<<< HEAD
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -54,24 +53,3 @@ def atualizar_historico_view(request):
     return redirect('proventos:historico')
 
     
-=======
-from django.views.generic import ListView
-from django.db import connection
-import pandas as pd
-from Atualizar_Transacoes.services.gerar_portfolios import calcular_posicao_portfolio
-from .services.coletar_proventos import atualizar_proventos
-from django.contrib import messages
-from django.shortcuts import render
-from .models import Provento
-
-class ProventosListView(ListView):
-    model = Provento
-    template_name = 'proventos/proventos.html'
-    context_object_name = 'proventos'
-    ordering = ['-data_com']
-
-def atualizar_dados_proventos(request):
-    atualizar_proventos()
-    messages.success(request, 'Proventos atualizados com sucesso!')
-    return redirect('proventos:lista')
->>>>>>> 18c34b6243b7ecca8b79329a6c5b8cc51857778c
