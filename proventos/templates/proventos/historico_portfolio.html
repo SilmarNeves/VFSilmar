@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="br-card" id="card-historico">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="h3">Histórico do Portfólio</h3>
+                <form method="POST" onsubmit="return handleSubmit(event)">
+                    {% csrf_token %}
+                    <button id="updateButton" class="br-button primary" type="submit">
+                        <i class="fas fa-sync"></i>
+                        Atualizar Histórico
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="br-message {{ message.tags }}" role="alert">
+                    <div class="icon">
+                        <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                    </div>
+                    <div class="content">{{ message }}</div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% for tipo, grid_data in dados_por_tipo.items %}
+            {% include 'components/ggrid.html' with title=grid_data.title columns=grid_data.columns table_data=grid_data.table_data %}
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function handleSubmit(event) {
+    const button = document.getElementById('updateButton');
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Atualizando...';
+    return true;
+}
+</script>
+{% endblock %}
