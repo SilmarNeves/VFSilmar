@@ -5,8 +5,13 @@ from django.views.decorators.http import require_http_methods
 from .services.gerar_historico_portfolio import gerar_historico_portfolio
 from .models import HistoricoPortfolio, ProventoAcao
 from .services.coletores import coletar_proventos
-
 from django.contrib import messages
+from carteira.models import Carteira
+from carteira.models import Carteira
+from movimentacao.models import Movimentacao_Ativo  # Updated import
+from django.db import connection
+
+
 
 
 @login_required
@@ -60,9 +65,38 @@ def lista_proventos(request):
     proventos = ProventoAcao.objects.all().order_by('-data_com')
     return render(request, 'proventos/lista.html', {'proventos': proventos})
 
+@login_required
 def atualizar_proventos(request):
     if request.method == 'POST':
-        papeis = ["MGLU3", "PETR4", "ASAI3", "HAPV3", "VIIA3"]
-        coletar_proventos(papeis)
+        modo = request.POST.get('modo', 'atual')
+        
+        if modo == 'historico':
+            # Atualiza histórico completo
+            papeis = obter_historico_papeis()
+            coletar_proventos(papeis)
+            messages.success(request, 'Histórico completo atualizado com sucesso!')
+        else:
+            # Atualiza apenas carteira atual
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT DISTINCT Ativo FROM portfolio_consolidadas")
+                papeis_atuais = [row[0] for row in cursor.fetchall()]
+            coletar_proventos(papeis_atuais)
+            messages.success(request, 'Proventos da carteira atual atualizados!')
+            
         return redirect('proventos:lista_proventos')
+    
     return render(request, 'proventos/atualizar.html')
+
+def obter_historico_papeis():
+    # Busca papéis da tabela portfolio_consolidadas
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT DISTINCT Ativo FROM portfolio_consolidadas")
+        papeis_atuais = [row[0] for row in cursor.fetchall()]
+        
+        # Busca papéis históricos da tabela transacoes_consolidadas
+        cursor.execute("SELECT DISTINCT Ativo FROM transacoes_consolidadas")
+        papeis_historicos = [row[0] for row in cursor.fetchall()]
+    
+    # Combina os dois conjuntos sem duplicatas
+    todos_papeis = set(papeis_atuais + papeis_historicos)
+    return list(todos_papeis)

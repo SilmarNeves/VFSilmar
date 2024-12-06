@@ -26,19 +26,29 @@ class ColetorDividendos:
                 
                 if len(valores) >= 5:
                     data_com = datetime.strptime(valores[0], '%d/%m/%Y') if valores[0] != '-' else None
-                    valor = float(valores[1].replace(',', '.'))
+                    valor_provento = float(valores[1].replace(',', '.'))
                     tipo_provento = valores[2]
                     data_pagamento = datetime.strptime(valores[3], '%d/%m/%Y') if valores[3] and valores[3] != '-' else None
-                    quantidade_acoes = int(valores[4])
+                    por_quantas_acoes = int(valores[4])
                     
-                    ProventoAcao.objects.create(
-                        papel=self.ticker,
+                    # Verifica se já existe um provento com mesmos dados
+                    provento_existente = ProventoAcao.objects.filter(
+                        ativo=self.ticker,
                         data_com=data_com,
-                        data_pagamento=data_pagamento,
                         tipo_provento=tipo_provento,
-                        valor=valor,
-                        quantidade_acoes=quantidade_acoes
-                    )
+                        valor_provento=valor_provento
+                    ).exists()
+                    
+                    # Só cria se não existir
+                    if not provento_existente:
+                        ProventoAcao.objects.create(
+                            ativo=self.ticker,
+                            data_com=data_com,
+                            data_pagamento=data_pagamento,
+                            tipo_provento=tipo_provento,
+                            valor_provento=valor_provento,
+                            por_quantas_acoes=por_quantas_acoes
+                        )
             return True
         except Exception as e:
             print(f"Erro ao obter dados da ação {self.ticker}: {e}")

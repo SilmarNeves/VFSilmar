@@ -17,14 +17,21 @@
         </div>
         
         {% if messages %}
+        <div class="messages">
             {% for message in messages %}
                 <div class="br-message {{ message.tags }}" role="alert">
                     <div class="icon">
                         <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
                     </div>
                     <div class="content">{{ message }}</div>
+                    <div class="close">
+                        <button class="br-button circle small" type="button" aria-label="Fechar">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </div>
             {% endfor %}
+        </div>
         {% endif %}
         
         {% for tipo, grid_data in dados_por_tipo.items %}
@@ -40,5 +47,15 @@ function handleSubmit(event) {
     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Atualizando...';
     return true;
 }
+
+// Adiciona funcionalidade para fechar as mensagens
+document.addEventListener('DOMContentLoaded', function() {
+    const closeButtons = document.querySelectorAll('.br-message .close button');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.br-message').remove();
+        });
+    });
+});
 </script>
 {% endblock %}
