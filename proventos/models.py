@@ -15,3 +15,15 @@ class HistoricoPortfolio(models.Model):
             models.Index(fields=['data']),
             models.Index(fields=['ativo'])
         ]
+
+class ProventoAcao(models.Model):
+    papel = models.CharField(max_length=10)
+    data_com = models.DateField()
+    data_pagamento = models.DateField(null=True, blank=True)
+    tipo_provento = models.CharField(max_length=50)
+    valor = models.DecimalField(max_digits=10, decimal_places=4)
+    quantidade_acoes = models.IntegerField(default=1)
+
+    class Meta:
+        ordering = ['-data_com', 'papel']
+

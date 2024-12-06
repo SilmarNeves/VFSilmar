@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from .services.gerar_historico_portfolio import gerar_historico_portfolio
-from .models import HistoricoPortfolio
+from .models import HistoricoPortfolio, ProventoAcao
+from .services.coletores import coletar_proventos
 
 from django.contrib import messages
 
@@ -52,4 +53,16 @@ def atualizar_historico_view(request):
         gerar_historico_portfolio()
     return redirect('proventos:historico')
 
-    
+from django.shortcuts import render
+from .models import ProventoAcao
+
+def lista_proventos(request):
+    proventos = ProventoAcao.objects.all().order_by('-data_com')
+    return render(request, 'proventos/lista.html', {'proventos': proventos})
+
+def atualizar_proventos(request):
+    if request.method == 'POST':
+        papeis = ["MGLU3", "PETR4", "ASAI3", "HAPV3", "VIIA3"]
+        coletar_proventos(papeis)
+        return redirect('proventos:lista_proventos')
+    return render(request, 'proventos/atualizar.html')

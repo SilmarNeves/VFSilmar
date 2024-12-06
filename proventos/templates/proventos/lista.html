@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="br-card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3>Proventos</h3>
+                <form method="POST" action="{% url 'proventos:atualizar_proventos' %}">
+                    {% csrf_token %}
+                    <button class="br-button primary" type="submit">
+                        <i class="fas fa-sync"></i> Atualizar Proventos
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="card-content">
+            <table class="br-table">
+                <thead>
+                    <tr>
+                        <th>Papel</th>
+                        <th>Data Com</th>
+                        <th>Data Pagamento</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for provento in proventos %}
+                    <tr>
+                        <td>{{ provento.papel }}</td>
+                        <td>{{ provento.data_com|date:"d/m/Y" }}</td>
+                        <td>{{ provento.data_pagamento|date:"d/m/Y"|default:"-" }}</td>
+                        <td>{{ provento.tipo_provento }}</td>
+                        <td>R$ {{ provento.valor|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
